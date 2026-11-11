@@ -1,0 +1,63 @@
+using System.Text.Json;
+using DmsQueueMonitor.Worker.Services;
+
+namespace DmsQueueMonitor.Worker;
+
+public sealed class Worker(
+    AvailabilityNotificationService notificationService,
+    NotificationStateStore stateStore,
+    ILogger<Worker> logger) : BackgroundService
+{
+    protected override async Task ExecuteAsync(
+        CancellationToken stoppingToken)
+    {
+        logger.LogInformation("MOCK TEST STARTED");
+
+        await RunScenarioAsync("Restart persistence test","""[{"test":true}]""",stoppingToken);
+
+        await RunScenarioAsync(
+            "1. Empty data",
+            "[]",
+            stoppingToken);
+
+        await RunScenarioAsync(
+            "2. First available data",
+            """[{"test":true}]""",
+            stoppingToken);
+
+        await RunScenarioAsync(
+            "3. Same available data",
+            """[{"test":true}]""",
+            stoppingToken);
+
+        await RunScenarioAsync(
+            "4. Empty data again",
+            "[]",
+            stoppingToken);
+
+        await RunScenarioAsync(
+            "5. Available again",
+            """[{"test":true}]""",
+            stoppingToken);
+
+        logger.LogInformation("MOCK TEST COMPLETED");
+    }
+
+    private async Task RunScenarioAsync(
+        string name,
+        string json,
+        CancellationToken cancellationToken)
+    {
+        logger.LogInformation("Scenario: {Name}", name);
+
+        using var document = JsonDocument.Parse(json);
+
+        await notificationService.NotifyIfAvailableAsync(
+            document.RootElement,
+            cancellationToken);
+
+        await Task.Delay(
+            TimeSpan.FromSeconds(2),
+            cancellationToken);
+    }
+}

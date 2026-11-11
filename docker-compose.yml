@@ -1,0 +1,24 @@
+services:
+  dms-monitor:
+    build:
+      context: .
+      dockerfile: Dockerfile
+
+    image: dms-queue-monitor:latest
+    container_name: dms-queue-monitor
+
+    restart: unless-stopped
+    # restart: "no"
+
+    environment:
+      DOTNET_ENVIRONMENT: Production
+      TZ: Europe/Kyiv
+      Telegram__Enabled: "true"
+      Telegram__BotToken: ${TELEGRAM_BOT_TOKEN}
+      Telegram__ChatId: ${TELEGRAM_CHAT_ID}
+
+    volumes:
+      - dms-data:/app/data
+
+volumes:
+  dms-data:

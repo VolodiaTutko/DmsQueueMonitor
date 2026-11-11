@@ -1,0 +1,14 @@
+<Solution>
+  <Folder Name="/Solution Items/">
+    <File Path=".dockerignore" />
+    <File Path="docker-compose.yml" />
+    <File Path="Dockerfile" />
+    <File Path="Worker.backup.txt" />
+  </Folder>
+  <Folder Name="/src/">
+    <Project Path="src/DmsQueueMonitor.Worker/DmsQueueMonitor.Worker.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/DmsQueueMonitor.Tests/DmsQueueMonitor.Tests.csproj" />
+  </Folder>
+</Solution>
